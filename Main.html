@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VTEN Character Sheet</title>
+</head>
+<body>
+	<SCRIPT>
+		var displaywin; // Window to display character sheet in
+		var newwin; // For extra info displays
+		var dotArray = [ "X", " • ○ ○", " • • ○", " • • •" ]; // Dots 0-3 in skills
+		var usedAssets;
+		var usedDisciplines;
+
+		// this varible contains data passed to new pop-ups
+		var min_feature = "scrollbars=yes, menubar=no, status=no, toolbar=no, resizable=yes";
+		var display_feature = "scrollbars=yes, menubar=yes, status=no, toolbar=no, resizable=yes";
+
+		// BASICS
+		var character_name = "No Name";
+		var clan_name = "";
+		var newInTown = false; // 1-3 stage, 1 if needs New In Town Card, 2 if needs follow up card, 3 if not new in town
+		var age = "";
+		var path_name = "";
+
+		// DISCIPLINES VALUES
+		var animalism = 0;
+		var auspex = 0;
+		var celerity = 0;
+		var dominate = 0;
+		var fortitude = 0;
+		var obfuscate = 0;
+		var potence = 0;
+		var presence = 0;
+		var protean = 0;
+		var valeran = 0;
+
+		// ASSETS
+		var contacts = 0;
+		var herd = 0;
+		var resources = 0;
+		var retainers = 0;
+		var influences = 0;
+
+		var clanDescriptions = {
+			Ventrue : "Business creeps",
+			Toreador : "Arty creeps",
+			Nosferatu : "Creepy creeps"
+		}
+
+		// Can include html tags to be placed into clan help dialogue windows
+		var clanDisciplines = {
+			brujah : "Celerity, Potence, Presence",
+			nosferatu : "Animalism, Obfuscate, Potence",
+			salubri : "Auspex, Fortitude, Valeran",
+			toreador : "Auspex, Celerity, Presence",
+			ventrue : "Dominate, Fortitude, Presence",
+			caitiff : "Pick three from the following: Animalism, Auspex,<br> Celerity, Dominate, Fortitude, Obfuscate, Potence, Presence;<br> or Spend four Freebies to include Protean or Valeran as one of your three.",
+			malkavian : "Auspex, Obfuscate and Dominate",
+			gangrel : "Animalism, Fortitude, Protean"
+		}
+
+		var clanWeaknesses = {
+			brujah : "Most Kindred can only be goaded to Frenzy when Hungry, but the Brujah feel the Beast’s hate in them every night. The first time a Brujah is directly antagonized by a given character each night, she must spend a Prestige or lash out as though Hungry. Most Courts understand the Brujah enough that at least some clemency is granted when it’s found the target intentionally provoked the attack.",
+			nosferatu : "You're revolting to see, hear or otherwise interact-with. In addition to being encouraged to wear makeup or other costuming to reflect this, if, while talking with another non-Nosferatu player, you move too quickly, or shout, or the like, apologize OOC and let her know she must spend a Vitae (or Prestige, if living), as her body viscerally reacts to your hideous presence. She's immune to this effect for the next hour.",
+			salubri : "Pick one of these two Weaknesses. You may shift from the Warrior to the Healer weakness if you shift your Path up a Tier, or the opposite when shifting down.",
+			toreador : "Toreador keenly feel the heady rush of victory and the crushing blow of defeat. They spend/lose a Prestige every Downtime. Further, while Vulnerable, they fixate on beautiful objects or (with both players’ permission), people, refusing to leave them.",
+			ventrue : "In short, Ventrue can’t hunt off-camera like other Kindred do. They’re free to feed from other Kindred as they’re able, or from their Herd, but Mortal and Ghoul characters are a different story. To determine whether a (Player) vessel is “worthy” of her palette, she must interact with him at length, then spend a Prestige to decide that he is, whether he knows she’s sizing him up so. Any suggestion that a Ventrue feed from a Mortal NPC who’s been brought on-screen (likely a Retainer, for instance), will unerringly earn an offended skoff, that is, unless she’s a Templated Blood Doll.",
+			caitiff : "Mystically, your Sire didn’t pass on a Clan Weakness. Socially, however, you’re screwed. First, no Camarilla city presently offers the Caitiff a seat on the Primogen Council (or, if any do, they’re not letting the other cities know). Sending a Caitiff as your Clan’s Acting Whip is well-understood to be a blatant insult to the others on the Council. Third, nearly all Caitiff are Neonates, with only a small handful of known Ancilla. Whether they’re a new phenomenon, have Vitae that remains weak, or simply seldom survive longer than a century, no known Elder is Clanless. Finally, like the rest of these, while not an inherent Weakness, per se, there does persist a rumor, that if a Caitiff devours the heart’s blood of a “proper” Kindred, under certain circumstances, she may uplift herself into that Clan, or at least take on its characteristics. Regardless of this legend’s literal veracity, it does more to encourage fear and loathing, particularly on the part of Elders, than it does to suggest Caitiff might have some hidden potential.",
+			malkavian : "All Malkavians draw their first Drama Card from the Malkavian Derangement Deck instead. If resolved, it returns to the player’s hand the following game, unless she uses her Downtime discard to get rid of it, drawing another Derangement card.",
+			gangrel : "The Gangrel Beast is closer to the surface than that of other Kindred. Your Hunger threshold is one Vitae higher."
+		}
+
+		var clanCamarilla = {
+			brujah : "The Brujah-Camarilla relationship was best described as “Complicated” centuries before there was a Facebook. While it’s true that a great many Brujah battle the Sect nightly, either as part of the Anarch Movement, the Sabbat, or fighting smaller battles as Independents, it’s also true that a great many of the front-line soldiers who stand opposed to them are their loyalist Clansmen. Is the Camarilla corrupt, nepotistic and designed to defend the Status Quo from the march of progress? Absolutely. But its continued survival, and dominance demonstrates it’s doing something right. Every decade that it persists cools the dream of a swift victory by the Anarch Revolution, as more practically-minded Brujah shrug and point out just how much more of an incestuous mess the Sect would be if they left.",
+			nosferatu : "One thing about being hideous and often-invisible is that most people don’t think much about why you’re, say, aligned with a given political interest. That seems to suit the Nosferatu just fine.",
+			salubri : "Salubri were still weakened when the Camarilla first formed, and joined, in part out of necessity. In the centuries since, while their numbers have grown, they are still choosier about prospective Progeny than some other Clans. It would be unfair to say the Camarilla takes their membership for granted, but not entirely inaccurate. While the Anarchs need mending at times, the fact is that so few Salubri are sufficiently-committed to revolution to jump ship. As few Mendicants as join the Movement, though, far fewer still join the Sabbat. Salubri looking to Sire often take great care to ensure their Fledglings won’t become true monsters, and if they do, they’ll at least be monsters directed at the Clan’s enemies, not its friends. No parent ever has completely control of their children, however, so a handful or so slip away now and then. The Salubri have a reputation for being trustworthy, that even the less idealistic ones who remember the importance of sending a doctor’s bill, so to speak, will at least deal honestly with you when she does so. Whatever the actual truth of the statement, the Mendicants are in the Camarilla, and unless something significant changes, they’re here to stay.",
+			toreador : "Some Toreador flirt with the Anarch Movement, becoming self-styled bohemians or revolutionary artists. Some gravitate toward the Sabbat, where their every cruel desire is permitted, free of any semblance to Humanity. The vast majority, however, remain close to the Camarilla, and for good cause: it works for them. The Sect provides them with patrons when they need them, audiences when they want them, and the relative stability in which to spend their time creating and appreciating beauty, rather than fleeing for their lives as their Havens burn. Those who want to play in politics find plenty of opportunities, as well, and the Artistes claim more than their fair share of Princes come from their numbers. Why spoil the party? Still not convinced? Fine. Go to an Anarch city, then one held by the Sabbat, then come home and tell me the Camarilla Domain isn’t, by far, the most beautiful.",
+			ventrue : "The Ventrue boast that most cities have a Prince from their blood is an exaggeration, but only barely. The truth remains that more Princes do come from their numbers than any other single Clan, even if they are not quite a simple majority. Regardless, the Ventrue and the Camarilla likely could not exist without one another. Some Blue Bloods reject their Clan’s modern corporate interests, and join the Sabbat with expectations of restoring an antiquated sense of honor to their name. A handful eschew both Sects’ precepts of responsibility and join the Anarchs or remain Independent to carve their own path. However, the structures of the Camarilla suit the Ventrue greatly, and, in turn, they generally serve it with a loyalty that comes with privilege. Where they ever, as a Clan, to leave, the Sect would likely implode.",
+			caitiff : "There is a notable distinction between being participants in the Camarilla and subjects to its laws. As the Caitiff have no Primogen representation, and scarce membership of age, their needs are, at best, largely forgotten by the Court, though they are still expected to uphold the Traditions and serve the city when called-upon. At worst, Caitiff are blamed as convenient scapegoats or even actively hunted by those who see them as harbingers of end-times that never seem to come. The sad truth is that all Elders, and most Ancilla, were born in a time when one’s parentage greatly determined one’s social class, and so give little thought to their contempt of the “Bastards.” The Nosferatu are hideous, loathsome wretches, and still have a seat on the Council. The Malkavians are incurably insane, and still have a seat on the Council. The Brujah are always, on some level, angry and still have a seat on the Council. The Ventrue and Salubri are always looking for leverage over others, and the Toreador and Gangrel seldom bother to make it to Council meetings, but they are all afforded representation. That the Camarilla gives each Clan a voice, but denies it to the most vulnerable Kindred is a sad irony that might, one night, be remedied.",
+			malkavian : "Most Kindred watch the iratic behavior many Malkavians exhibit and wonder why they’re choose the structured order of the Camarilla over the freedom of the Anarachs or… other, less savory options. The truth is that for most people (living or otherwise) dealing with a mental disorder, routine and structure help maintain a sense of order in the chaos, and make coping easier. Most Kindred who think about it long enough assume that’s what the Malks get from the arrangement. The others inevitably figure the Clan has some other purpose for the Sect that no one’s figured out just yet.",
+			gangrel : "The gifts of Clan Gangrel allow its children to move between cities in ways that terrify other Kindred. As a result, the Gangrel population of a city is better defined as which of them happen to be in town at the time, versus the dynasties in residency from the other Clans. Where other Clans present themselves to the Prince and kiss her ring for acceptance in a new city, the Gangrel generally check in briefly, never thinking to bend knee to anyone. As vexing as some Princes find this lack of decorum, they can’t deny the value in having Kindred in their Sect who can so easily move about. Some messages can’t be entrusted to post, or even Ghouls, and the message to be delivered is sometimes that of a sudden, swift bout of bloodshed, something else at which the Gangrel excel, when called-to."
+		}
+
+		var clanPreferredAssets = {
+			brujah : "The Rabble who need backup can rely on Herd, Influence, and anyone who doesn’t want to be pounded into a messy red pulp.",
+			nosferatu : "The Rats get their fingers into pies that give them dirt (Contacts), then leverage  said dirt into long-term control over those who don’t want that out (Influence, Retainers).",
+			salubri : "The Sawbones tend to build access to Herd and Contacts, and the Assets of grievously-wounded Kindred in need of their care.",
+			toreador : "Building a powerbase is a drag. Throwing the right party, where the snacks (Herd) show up of their own accord, though, and the kinds of people who want desperately to be wanted (Influence, Contacts) is far more fun.",
+			ventrue : "All of them. (It’s good to be king). Bluebloods do focus on Herd, Influence and Resources, though.",
+			caitiff : "????",
+			malkavian : "The Malkavians often end up with Influence, Contacts and Herd, but some whisper the breadth of their ties even put the Ventruone to shame. When pressed on this, the Malkavians just snicker.",
+			gangrel : ": The Gangrel trust people at arm’s length, or right where they can see them. That translates into Contacts and Retainers, respectively."
+		}
+
+		function Clan_Help() {
+			newwin = open('', 'Help', min_feature);
+			newwin.document.writeln('			<style type="text/css">');
+			newwin.document.writeln('	table.table1 {');
+			newwin.document
+					.writeln('		font-family: verdana, arial, sans-serif;');
+			newwin.document.writeln('		font-size: 11px;');
+			newwin.document.writeln('		color: #333333;');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		border-color: #3A3A3A;');
+			newwin.document.writeln('		border-collapse: collapse;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 th {');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		padding: 8px;');
+			newwin.document.writeln('		border-style: solid;');
+			newwin.document.writeln('		border-color: #517994;');
+			newwin.document.writeln('		background-color: #B2CFD8;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 tr:hover td {');
+			newwin.document.writeln('		background-color: #DFEBF1;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 td {');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		padding: 8px;');
+			newwin.document.writeln('		border-style: solid;');
+			newwin.document.writeln('		border-color: #517994;');
+			newwin.document.writeln('		background-color: #ffffff;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln('</style>');
+
+			newwin.document.writeln('<center>');
+			newwin.document.writeln('<table class="table1">');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <th>Clan</th>');
+			newwin.document.writeln('    <th>Disciplines</th>');
+			newwin.document.writeln('    <th>Weakness</th>');
+			newwin.document.writeln('    <th>Relationship with Camarilla</th>');
+			newwin.document.writeln('    <th>Preferred Assets</th>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Brujah</td>');
+			newwin.document.writeln('    <td>' + clanDisciplines["brujah"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanWeaknesses["brujah"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanCamarilla["brujah"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanPreferredAssets["brujah"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Nosferatu</td>');
+			newwin.document.writeln('    <td>' + clanDisciplines["nosferatu"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanWeaknesses["nosferatu"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanCamarilla["nosferatu"]
+					+ '</td>');
+			newwin.document.writeln('    <td>'
+					+ clanPreferredAssets["nosferatu"] + '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Salubri</td>');
+			newwin.document.writeln('    <td>' + clanDisciplines["salubri"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanWeaknesses["salubri"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanCamarilla["salubri"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanPreferredAssets["salubri"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Toreador</td>');
+			newwin.document.writeln('    <td>' + clanDisciplines["toreador"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanWeaknesses["toreador"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanCamarilla["toreador"]
+					+ '</td>');
+			newwin.document.writeln('    <td>'
+					+ clanPreferredAssets["toreador"] + '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Ventrue</td>');
+			newwin.document.writeln('    <td>' + clanDisciplines["ventrue"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanWeaknesses["ventrue"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanCamarilla["ventrue"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanPreferredAssets["ventrue"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Caitiff</td>');
+			newwin.document.writeln('    <td>' + clanDisciplines["caitiff"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanWeaknesses["caitiff"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanCamarilla["caitiff"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanPreferredAssets["caitiff"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Malkavian</td>');
+			newwin.document.writeln('    <td>' + clanDisciplines["malkavian"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanWeaknesses["malkavian"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanCamarilla["malkavian"]
+					+ '</td>');
+			newwin.document.writeln('    <td>'
+					+ clanPreferredAssets["malkavian"] + '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Gangrel</td>');
+			newwin.document.writeln('    <td>' + clanDisciplines["gangrel"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanWeaknesses["gangrel"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanCamarilla["gangrel"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + clanPreferredAssets["gangrel"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td></td>');
+			newwin.document.writeln('    <td></td>');
+			newwin.document.writeln('    <td></td>');
+			newwin.document.writeln('    <td></td>');
+			newwin.document.writeln('    <td></td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('</table>');
+			newwin.document
+					.writeln('<input type=button value="Close" onClick="window.close()">');
+		}
+
+		// Get the clan from the select box and
+		// set the clan_name varible.
+		function setClan() {
+			var e = document.getElementById("clan_id");
+			clan_name = e.options[e.selectedIndex].value;
+		}
+
+		// Get the path from the select box and
+		// set the path_name varible.
+		function setPath() {
+			var e = document.getElementById("path_id");
+			path_name = e.options[e.selectedIndex].value;
+		}
+
+		// Get the age from the select box and
+		// set the age varible.
+		function setAge() {
+			var e = document.getElementById("age_id");
+			age = e.options[e.selectedIndex].value;
+		}
+
+		// Takes a number 0-3 and returns dot equivalent string
+		function getDotString(num) {
+			if (num <= 0) { // Effectively checks if undefined, kind of hacky
+				return dotArray[0];
+			}
+			return dotArray[num];
+		}
+
+		function resetForm() {
+			// Clear log of which assets/disciplines have been used
+			usedAssets = [];
+			usedDisciplines = [];
+
+			main.reset();
+		}
+
+		function addUsedAsset(assetName) {
+			usedAssets.push(assetName);
+		}
+
+		function addUsedDiscipline(disciplineName) {
+			usedDisciplines.push(disciplineName);
+		}
+
+		// Gets values of all radio buttons, converts values for
+		// different traits into corresponding dot strings.
+		function assignDotTraits() {
+
+			//Assets
+			contacts = getDotString(document.main.contacts.value);
+			herd = getDotString(document.main.herd.value);
+			resources = getDotString(document.main.resources.value);
+			retainers = getDotString(document.main.retainers.value);
+			influences = getDotString(document.main.influences.value);
+
+			//Disciplines
+			animalism = getDotString(document.main.animalism.value);
+			auspex = getDotString(document.main.auspex.value);
+			celerity = getDotString(document.main.celerity.value);
+			dominate = getDotString(document.main.dominate.value);
+			fortitude = getDotString(document.main.fortitude.value);
+			obfuscate = getDotString(document.main.obfuscate.value);
+			potence = getDotString(document.main.potence.value);
+			presence = getDotString(document.main.presence.value);
+			protean = getDotString(document.main.protean.value);
+			valeran = getDotString(document.main.valeran.value);
+		}
+
+		// This function displays an empty character sheet.
+		// The window handle is saved in "displaywin".
+		// Names are put in the fields so that other functions
+		// may enter data later.
+		function Display_Empty_Sheet() {
+
+			assignDotTraits();
+			setClan();
+			setPath();
+			setAge();
+			character_name = document.getElementById('charname_id').value;
+
+			displaywin = open('', 'Language', display_feature);
+			displaywin.document.writeln('<table cellpadding="2">');
+			displaywin.document.writeln('		<tr>');
+			displaywin.document.writeln('			<td>Name:</td>');
+			displaywin.document.writeln('			<td>' + character_name + '</td>');
+			displaywin.document.writeln('			<td>Age:</td>');
+			displaywin.document.writeln('			<td>' + age + '</td>');
+			displaywin.document.writeln('		</tr>');
+			displaywin.document.writeln('		<tr>');
+			displaywin.document.writeln('			<td>Clan:</td>');
+			displaywin.document.writeln('			<td>' + clan_name + '</td>');
+			displaywin.document.writeln('			<td>Path:</td>');
+			displaywin.document.writeln('			<td>' + path_name + '</td>');
+			displaywin.document.writeln('		</tr>');
+			displaywin.document.writeln('		<tr>');
+			displaywin.document
+					.writeln('			<td style="vertical-align: top;">Assets:</td>');
+			displaywin.document.writeln('			<td style="vertical-align: top;">');
+			displaywin.document.writeln('				<P>');
+
+			if (contacts != "X") {
+				displaywin.document.writeln('					<b>Contacts:</b>' + contacts);
+			}
+			displaywin.document.writeln('				<P>');
+			if (herd != "X") {
+				displaywin.document.writeln('					<b>Herd:</b>' + herd);
+			}
+			displaywin.document.writeln('				<P>');
+			if (resources != "X") {
+				displaywin.document.writeln('					<b>Resources:</b>'
+						+ resources);
+			}
+			displaywin.document.writeln('				<P>');
+			if (retainers != "X") {
+				displaywin.document.writeln('					<b>Retainers:</b>'
+						+ retainers);
+			}
+			displaywin.document.writeln('				<P>');
+			if (influences != "X") {
+				displaywin.document.writeln('					<b>Influences:</b>'
+						+ influences);
+			}
+			displaywin.document.writeln('			</td>');
+			displaywin.document
+					.writeln('			<td style="vertical-align: top;">Disciplines:</td>');
+			displaywin.document.writeln('			<td style="vertical-align: top;">');
+			displaywin.document.writeln('				<P>');
+			if (animalism != "X") {
+				displaywin.document.writeln('					<b>Animalism:</b>'
+						+ animalism);
+			}
+			displaywin.document.writeln('				<P>');
+			if (auspex != "X") {
+				displaywin.document.writeln('					<b>Auspex:</b>' + auspex);
+			}
+			displaywin.document.writeln('				<P>');
+			if (celerity != "X") {
+				displaywin.document.writeln('					<b>Celerity:</b>' + celerity);
+			}
+			displaywin.document.writeln('				<P>');
+			if (dominate != "X") {
+				displaywin.document.writeln('					<b>Dominate:</b>' + dominate);
+			}
+			displaywin.document.writeln('				<P>');
+			if (fortitude != "X") {
+				displaywin.document.writeln('					<b>Fortitude:</b>'
+						+ fortitude);
+			}
+			displaywin.document.writeln('				<P>');
+			if (obfuscate != "X") {
+				displaywin.document.writeln('					<b>Obfuscate:</b>'
+						+ obfuscate);
+			}
+			displaywin.document.writeln('				<P>');
+			if (potence != "X") {
+				displaywin.document.writeln('					<b>Potence:</b>' + potence);
+			}
+			displaywin.document.writeln('				<P>');
+			if (presence != "X") {
+				displaywin.document.writeln('					<b>Presence:</b>' + presence);
+			}
+			displaywin.document.writeln('				<P>');
+			if (protean != "X") {
+				displaywin.document.writeln('					<b>Protean:</b>' + protean);
+			}
+			displaywin.document.writeln('				<P>');
+			if (valeran != "X") {
+				displaywin.document.writeln('					<b>Valeran:</b>' + valeran
+						+ '</td>');
+			}
+			displaywin.document.writeln('		</tr>');
+			displaywin.document.writeln('	</table>');
+
+			// you're cut off
+			// displaywin.document.close();
+			displaywin.focus();
+		} // end of Display_Empty_Sheet()
+
+		function displayCharacter() {
+
+			Display_Empty_Sheet();
+			displaywin.document.display.character.value = oneDot;
+			displaywin.document.display.player.value = twoDot;
+			displaywin.document.display.race.value = threeDot;
+
+		}
+	</SCRIPT>
+	<style type="text/css">
+.tg {
+	border-collapse: collapse;
+	border-spacing: 0;
+	border-color: #999;
+}
+
+.tg td {
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	padding: 10px 5px;
+	border-style: solid;
+	border-width: 1px;
+	overflow: hidden;
+	word-break: normal;
+	border-color: #999;
+	color: #444;
+	background-color: #F7FDFA;
+}
+
+.tg .tg-e3zv {
+	font-weight: bold
+}
+
+.tg .tg-yw4l {
+	vertical-align: top
+}
+</style>
+	<form name="main">
+		<table class="tg">
+			<tr>
+				<td><b>Name: </b><INPUT id='charname_id' name=character_name
+					value="Who are you, anyway?"></td>
+				<td><b>Age: <SELECT name='age' id='age_id'
+						onChange='setAge()'>
+							<OPTION value="NONE">-----</OPTION>
+							<OPTION value="Neonate">Neonate</OPTION>
+							<OPTION value="Ancillae">Ancillae</OPTION>
+							<OPTION value="Elder">Elder</OPTION>
+					</SELECT>
+				</b></td>
+			</tr>
+			<tr>
+				<td class="tg-9hbo"><b>Clan: </b><SELECT name=clan id='clan_id'
+					size="1" onChange="setClan()">
+						<OPTION value="NONE">-----</OPTION>
+						<OPTION value="Brujah">Brujah</OPTION>
+						<OPTION value="Nosferatu">Nosferatu</OPTION>
+						<OPTION value="Salubri">Salubri</OPTION>
+						<OPTION value="Toreador">Toreador</OPTION>
+						<OPTION value="Ventrue">Ventrue</OPTION>
+						<OPTION value="Caitiff">Caitiff</OPTION>
+						<OPTION value="Malkavian">Malkavian</OPTION>
+						<OPTION value="Gangrel">GangreL</OPTION>
+				</SELECT> <br> <input type=button name="player_clan_help"
+					value="Clan details" onClick="Clan_Help()"></td>
+				<td class="tg-9hbo"><b>Path: </b><SELECT id='path_id' name=path
+					onChange="setPath()">
+						<OPTION value="NONE">-----</OPTION>
+						<OPTION value="Path of Humanity">Path of Humanity</OPTION>
+						<OPTION value="Path of Equity">Path of Equity</OPTION>
+						<OPTION value="Path of Fraternity">Path of Fraternity</OPTION>
+						<OPTION value="Path of Horror">Path of Horror</OPTION>
+						<OPTION value="Path of Indulgence">Path of Indulgence</OPTION>
+						<OPTION value="Path of Mercy">Path of Mercy</OPTION>
+						<OPTION value="Path of Mysteries">Path of Mysteries</OPTION>
+						<OPTION value="Path of Nobility">Path of Nobility</OPTION>
+						<OPTION value="Path of Survival">Path of Survival</OPTION>
+						<OPTION value="Path of War">Path of War</OPTION>
+						<OPTION value="Path of Death">Path of Death</OPTION>
+						<OPTION value="Path of Judgment">Path of Judgment</OPTION>
+						<OPTION value="Path of Paradox">Path of Paradox</OPTION>
+						<OPTION value="Path of Typhon/Corruption">Path of
+							Typhon/Corruption</OPTION>
+						<OPTION value="Path of Judgment">Path of Judgment</OPTION>
+				</SELECT></td>
+			</tr>
+			<tr>
+				<td valign="top"><b>Assets:</b>
+					<P>
+						<B>Contacts:</B> <INPUT onclick=assignContacts(1) type=radio
+							value=1 name=contacts><INPUT onclick=assignContacts(2)
+							type=radio value=2 name=contacts><INPUT
+							onclick=assignContacts(3) type=radio value=3 name=contacts>
+					<P>
+						<B>Herd:</B> <INPUT onclick=assignHerd(1) type=radio value=1
+							name=herd id="herd_id"><INPUT onclick=assignHerd(2)
+							type=radio value=2 name=herd><INPUT onclick=assignHerd(3)
+							type=radio value=3 name=herd>
+					<P>
+					<P>
+						<B>Resources:</B> <INPUT onclick=assignResources(1) type=radio
+							value=1 name=resources><INPUT onclick=assignResources(2)
+							type=radio value=2 name=resources><INPUT
+							onclick=assignResources(3) type=radio value=3 name=resources>
+					<P>
+					<P>
+						<B>Retainers:</B> <INPUT onclick=assignRetainers(1) type=radio
+							value=1 name=retainers><INPUT onclick=assignRetainers(2)
+							type=radio value=2 name=retainers><INPUT
+							onclick=assignRetainers(3) type=radio value=3 name=retainers>
+					<P>
+					<P>
+						<B>Influences:</B> <INPUT onclick=assignInfluences(1) type=radio
+							value=1 name=influences><INPUT
+							onclick=assignInfluences(2) type=radio value=2 name=influences><INPUT
+							onclick=assignInfluences(3) type=radio value=3 name=influences>
+					<P></td>
+				<td class="tg-9hbo"><b>Disciplines:</b>
+					<P>
+						<B>Animalism:</B> <INPUT onclick=assignAnimalism(1) type=radio
+							value=1 name=animalism><INPUT onclick=assignAnimalism(2)
+							type=radio value=2 name=animalism><INPUT
+							onclick=assignAnimalism(3) type=radio value=3 name=animalism>
+					<P>
+					<P>
+						<B>Auspex:</B> <INPUT onclick=assignAuspex(1) type=radio value=1
+							name=auspex><INPUT onclick=assignAuspex(2) type=radio
+							value=2 name=auspex><INPUT onclick=assignAuspex(3)
+							type=radio value=3 name=auspex>
+					<P>
+					<P>
+						<B>Celerity:</B> <INPUT onclick=assignCelerity(1) type=radio
+							value=1 name=celerity><INPUT onclick=assignCelerity(2)
+							type=radio value=2 name=celerity><INPUT
+							onclick=assignCelerity(3) type=radio value=3 name=celerity>
+					<P>
+					<P>
+						<B>Dominate:</B> <INPUT onclick=assignDominate(1) type=radio
+							value=1 name=dominate><INPUT onclick=assignDominate(2)
+							type=radio value=2 name=dominate><INPUT
+							onclick=assignDominate(3) type=radio value=3 name=dominate>
+					<P>
+					<P>
+						<B>Fortitude:</B> <INPUT onclick=assignFortitude(1) type=radio
+							value=1 name=fortitude><INPUT onclick=assignFortitude(2)
+							type=radio value=2 name=fortitude><INPUT
+							onclick=assignFortitude(3) type=radio value=3 name=fortitude>
+					<P>
+					<P>
+						<B>Obfuscate:</B> <INPUT onclick=assignObfuscate(1) type=radio
+							value=1 name=obfuscate><INPUT onclick=assignObfuscate(2)
+							type=radio value=2 name=obfuscate><INPUT
+							onclick=assignObfuscate(3) type=radio value=3 name=obfuscate>
+					<P>
+					<P>
+						<B>Potence:</B> <INPUT onclick=assignPotence(1) type=radio value=1
+							name=potence><INPUT onclick=assignPotence(2) type=radio
+							value=2 name=potence><INPUT onclick=assignPotence(3)
+							type=radio value=3 name=potence>
+					<P>
+					<P>
+						<B>Presence:</B> <INPUT onclick=assignPresence(1) type=radio
+							value=1 name=presence><INPUT onclick=assignPresence(2)
+							type=radio value=2 name=presence><INPUT
+							onclick=assignPresence(3) type=radio value=3 name=presence>
+					<P>
+					<P>
+						<B>Protean:</B> <INPUT onclick=assignProtean(1) type=radio value=1
+							name=protean><INPUT onclick=assignProtean(2) type=radio
+							value=2 name=protean><INPUT onclick=assignProtean(3)
+							type=radio value=3 name=protean>
+					<P>
+					<P>
+						<B>Valeran:</B> <INPUT onclick=assignValeran(1) type=radio value=1
+							name=valeran><INPUT onclick=assignValeran(2) type=radio
+							value=2 name=valeran><INPUT onclick=assignValeran(3)
+							type=radio value=3 name=valeran>
+					<P></td>
+			</tr>
+			<tr>
+				<td class="tg-yw4l"><input type=button name=display_character
+					value="Display Character" onClick="displayCharacter()"></td>
+				<td class="tg-yw4l"><input type=button name=clear_values
+					value="Clear Dots" onClick="resetForm()"></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
