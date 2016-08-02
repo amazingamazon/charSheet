@@ -192,17 +192,17 @@
 
 		// Flavor text for paths
 		var pathFlavor = {
-			humanity : "Just because the rules have changed doesn’t mean I have. I’m a person, dammit, and you can’t take that away from me!",
-			equity : "Better to be a cat in a barn full of mice than king of an empty field.",
-			fraternity : "Your mistake, bub, was hurting my little sister. You mess with one of us, you mess with us all.",
-			horror : "You can feel it, the hunger, the rage. I’ve made peace with the monster inside me. If tonight had played out differently, maybe you would have, too. Too bad.",
-			indulgence : "If I have to live forever, I want to wake up each night, looking forward to the experiences it has to offer. If I die tomorrow, it’ll be with a smile on my lips as they crumble to ashes.",
-			mercy : "Every night, we’re each given a choice: will we inflict the pain we feel back on the world, or will we make it a little brighter, even if the light burns us to do it? You always have that choice.",
-			mysteries : "Eternal life, and endless mysteries to unfold. Your survival depends on knowing what’s coming. Would you like to see what I’ve seen coming for you?",
-			nobility : "Please, there’s no need to kneel. Have a seat, and tell me what I can do for you.",
-			survival : "Sorry, what were you talking about? For a second there, I almost forgot we’re supernatural predators, competing for blood and territory. Key word there being ‘almost.’",
-			war : "I didn’t choose to take up the sword, but I chose not to put it down. There’re causes worth fighting for, and people who need to put it on the line, night after night. Now get behind me and keep low.",
-			corruption : "Every night, you scramble about, chasing after ephemeral things like meaning, and the regard of your peers. Come, tell me how well that’s actually working for you. And please do be honest."
+			humanity : "<i>Just because the rules have changed doesn’t mean I have. I’m a person, dammit, and you can’t take that away from me!<i>",
+			equity : "<i>Better to be a cat in a barn full of mice than king of an empty field.<i>",
+			fraternity : "<i>Your mistake, bub, was hurting my little sister. You mess with one of us, you mess with us all.<i>",
+			horror : "<i>You can feel it, the hunger, the rage. I’ve made peace with the monster inside me. If tonight had played out differently, maybe you would have, too. Too bad.<i>",
+			indulgence : "<i>If I have to live forever, I want to wake up each night, looking forward to the experiences it has to offer. If I die tomorrow, it’ll be with a smile on my lips as they crumble to ashes.<i>",
+			mercy : "<i>Every night, we’re each given a choice: will we inflict the pain we feel back on the world, or will we make it a little brighter, even if the light burns us to do it? You always have that choice.<i>",
+			mysteries : "<i>Eternal life, and endless mysteries to unfold. Your survival depends on knowing what’s coming. Would you like to see what I’ve seen coming for you?<i>",
+			nobility : "<i>Please, there’s no need to kneel. Have a seat, and tell me what I can do for you.<i>",
+			survival : "<i>Sorry, what were you talking about? For a second there, I almost forgot we’re supernatural predators, competing for blood and territory. Key word there being ‘almost.’<i>",
+			war : "<i>I didn’t choose to take up the sword, but I chose not to put it down. There’re causes worth fighting for, and people who need to put it on the line, night after night. Now get behind me and keep low.<i>",
+			corruption : "<i>Every night, you scramble about, chasing after ephemeral things like meaning, and the regard of your peers. Come, tell me how well that’s actually working for you. And please do be honest.<i>"
 		}
 
 		// Path conflicts
@@ -374,9 +374,251 @@
 			tech : "Your disbursed network of hackers, bloggers, and the odd data analyst let you crunch the numbers in an ever-shrinking world. While this remains untapped, you may look at the top Event in the stack."
 		}
 
+		function Path_Help() {
+			newwin = open('', 'Help', min_feature);
+			newwin.document.writeln('			<style type="text/css">');
+			newwin.document.writeln('	table.table1 {');
+			newwin.document
+					.writeln('		font-family: verdana, arial, sans-serif;');
+			newwin.document.writeln('		font-size: 11px;');
+			newwin.document.writeln('		color: #333333;');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		border-color: #3A3A3A;');
+			newwin.document.writeln('		border-collapse: collapse;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 th {');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		padding: 8px;');
+			newwin.document.writeln('		border-style: solid;');
+			newwin.document.writeln('		border-color: #517994;');
+			newwin.document.writeln('		background-color: #B2CFD8;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 tr:hover td {');
+			newwin.document.writeln('		background-color: #DFEBF1;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 td {');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		padding: 8px;');
+			newwin.document.writeln('		border-style: solid;');
+			newwin.document.writeln('		border-color: #517994;');
+			newwin.document.writeln('		background-color: #ffffff;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln('</style>');
+
+			newwin.document.writeln('<table class="table1">');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <th>Path</th>');
+			newwin.document.writeln('    <th>Flavor</th>');
+			newwin.document.writeln('    <th>Conflict</th>');
+			newwin.document.writeln('    <th>General Abilities</th>');
+			newwin.document.writeln('    <th>Overflow</th>');
+			newwin.document.writeln('    <th>Ancilla Ability</th>');
+			newwin.document.writeln('    <th>Elder Ability</th>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Humanity</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["humanity"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathConflict["humanity"]
+					+ '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["humanity"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["humanity"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["humanity"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["humanity"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["humanity"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockAncilla["humanity"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["humanity"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Equity</td>');
+			newwin.document
+					.writeln('    <td>' + pathFlavor["equity"] + '</td>');
+			newwin.document.writeln('   <td>' + pathConflict["equity"]
+					+ '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["equity"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["equity"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["equity"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["equity"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["equity"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockAncilla["equity"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["equity"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Fraternity</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["fraternity"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathConflict["fraternity"]
+					+ '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["fraternity"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["fraternity"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["fraternity"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["fraternity"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["fraternity"]
+					+ '</td>');
+			newwin.document.writeln('    <td>'
+					+ pathUnlockAncilla["fraternity"] + '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["fraternity"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Horror</td>');
+			newwin.document
+					.writeln('    <td>' + pathFlavor["horror"] + '</td>');
+			newwin.document
+					.writeln('  <td>' + pathConflict["horror"] + '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["horror"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["horror"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["horror"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["horror"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["horror"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockAncilla["horror"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["horror"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Indulgence</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["indulgence"]
+					+ '</td>');
+			newwin.document.writeln('   <td>' + pathConflict["indulgence"]
+					+ '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["indulgence"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["indulgence"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["indulgence"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["indulgence"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["indulgence"]
+					+ '</td>');
+			newwin.document.writeln('    <td>'
+					+ pathUnlockAncilla["indulgence"] + '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["indulgence"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Mercy</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["mercy"] + '</td>');
+			newwin.document
+					.writeln('   <td>' + pathConflict["mercy"] + '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["mercy"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["mercy"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["mercy"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["mercy"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["mercy"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockAncilla["mercy"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["mercy"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Mysteries</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["mysteries"]
+					+ '</td>');
+			newwin.document.writeln('   <td>' + pathConflict["mysteries"]
+					+ '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["mysteries"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["mysteries"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["mysteries"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["mysteries"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["mysteries"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockAncilla["mysteries"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["mysteries"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Nobility</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["nobility"]
+					+ '</td>');
+			newwin.document.writeln('  <td>' + pathConflict["nobility"]
+					+ '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["nobility"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["nobility"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["nobility"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["nobility"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["nobility"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockAncilla["nobility"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["nobility"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Survival</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["survival"]
+					+ '</td>');
+			newwin.document.writeln('     <td>' + pathConflict["survival"]
+					+ '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["survival"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["survival"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["survival"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["survival"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["survival"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockAncilla["survival"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["survival"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>War</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["war"] + '</td>');
+			newwin.document.writeln('    <td>' + pathConflict["war"] + '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["war"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["war"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["war"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["war"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["war"] + '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockAncilla["war"]
+					+ '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["war"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Corruption</td>');
+			newwin.document.writeln('    <td>' + pathFlavor["corruption"]
+					+ '</td>');
+			newwin.document.writeln('     <td>' + pathConflict["corruption"]
+					+ '</td>');
+			newwin.document.writeln('    <td><b>0</b> - '
+					+ pathAbilitiesZero["corruption"] + ' <b>1</b> - '
+					+ pathAbilitiesOne["corruption"] + ' <b>3</b> - '
+					+ pathAbilitiesThree["corruption"] + ' <b>6</b> - '
+					+ pathAbilitiesSix["corruption"] + '</td>');
+			newwin.document.writeln('    <td>' + pathOverflow["corruption"]
+					+ '</td>');
+			newwin.document.writeln('    <td>'
+					+ pathUnlockAncilla["corruption"] + '</td>');
+			newwin.document.writeln('    <td>' + pathUnlockElder["corruption"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('</table>');
+			newwin.document.writeln('');
+
+		}
+
 		function Influences_Help() {
 			newwin = open('', 'Help', min_feature);
-
 			newwin.document.writeln('			<style type="text/css">');
 			newwin.document.writeln('	table.table1 {');
 			newwin.document
@@ -859,7 +1101,9 @@
 						<OPTION value="9">Path of Survival</OPTION>
 						<OPTION value="10">Path of War</OPTION>
 						<OPTION value="11">Path of Corruption</OPTION>
-				</SELECT></td>
+				</SELECT> <br>
+				<input type=button name="player_path_help" value="Path details"
+					onClick="Path_Help()"></td>
 			</tr>
 			<tr>
 				<td valign="top"><b>Assets:</b>
