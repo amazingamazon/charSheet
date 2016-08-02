@@ -2,10 +2,46 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery.min.js"></script>
 <title>VTEN Character Sheet</title>
+<style type="text/css">
+.tg {
+	border-collapse: collapse;
+	border-spacing: 0;
+	border-color: #999;
+}
+
+.tg td {
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	padding: 10px 5px;
+	border-style: solid;
+	border-width: 1px;
+	overflow: hidden;
+	word-break: normal;
+	border-color: #999;
+	color: #444;
+	background-color: #F7FDFA;
+}
+
+.tg .tg-e3zv {
+	font-weight: bold
+}
+
+.tg .tg-yw4l {
+	vertical-align: top
+}
+
+#container {
+	height: 100%;
+	width: 100%;
+}
+</style>
+
 </head>
-<body>
-	<SCRIPT>
+<body style="background-color: #FFFFFF">
+	<SCRIPT type="text/javascript">
 		var displaywin; // Window to display character sheet in
 		var newwin; // For extra info displays
 		var dotArray = [ "X", " • ○ ○", " • • ○", " • • •" ]; // Dots 0-3 in skills
@@ -41,6 +77,7 @@
 		var resources = 0;
 		var retainers = 0;
 		var influences = 0;
+		var influencesList;
 
 		// PATH DETAILS
 		//var flavorText; exists, no current use
@@ -72,6 +109,20 @@
 			skillOverflow = pathOverflow[pathAbbreviation];
 			skillAncilla = pathUnlockAncilla[pathAbbreviation];
 			skillElder = pathUnlockElder[pathAbbreviation];
+		}
+
+		function setInfluences() {
+			// declare a checkbox array 
+			var array = [];
+
+			// Look for all checkboes that have a class 
+			// 'influences' attached to it and check if it was checked 
+			$(".influences:checked").each(function() {
+				array.push($(this).val());
+			});
+
+			// we join the array separated by the comma
+			influencesList = array.join(", ");
 		}
 
 		var clanDescriptions = {
@@ -302,12 +353,25 @@
 			valeran : "Controlling bodies to heal or harm."
 		}
 
-		var aspectsBasicText = {
+		var assetsBasicText = {
 			contacts : "Informs you of others' plans.",
 			herd : "A steady supply of blood.",
 			resources : "Money solves problems.",
 			retainers : "Specific people you control.",
 			influences : "Groups over whom you hold sway."
+		}
+
+		var influencesText = {
+			bureaucratic : "You have people to help shuffle papers and clear red tape. If you still have this active during Resolution, your total number of Drama Cards is considered one lower (min zero).",
+			financial : "Bankers, accountants, and the occasional bookie answer to you. You may increase the purchasing power for a single Resource purchase by one dot. For instance, if a player has a one-dot Purchase available, a use of Financial Influence could allow her to make a two-dot purchase with it. A player without any Resources available (or, who’s already spent hers for the game) gains a single one-dot purchase.",
+			society : "Whether high society aristocracy or lower-class bohemians, you know people who make culture. If you still have this active during Resolution, you gain a Prestige during Downtime.",
+			church : "You have connections with clergy of different faiths, or entrenched within one. If you still have this active during Resolution, instead of getting shuffled in with the other Drama Cards, you may place one you Resolved this game on the bottom of the stack.",
+			media : "You’ve earned favors from journalists, in print media and online. If you still have this active during Resolution, you may draw two Drama Cards when you next draw and choose the one you want, placing the other back on top.",
+			medical : "Doctors, nurses, surgeons and EMT’s, you know people who save lives. If you still have this active during Resolution, you may select another Player (or yourself) to start next session with three additional Vitae (no more than Max for Age).",
+			street : "Anything but glamorous, you have friends in low places. If you still have this active during Resolution, you may select another Player next session to start with three fewer Vitae (Min zero).",
+			police : "Even in the World of Darkness, some police offices and employees refuse to accept bribes. If you still have this active during Resolution, you may select another Player to draw an extra Drama Card, as an old case gets reopened, pointed her way.",
+			underworld : "Mafia, Simya, Yakuza, Tong. The names may differ, but you focus on the results they deliver. If you still have this active during Resolution, instead of getting shuffled in with the other Drama Cards, you may place one you Resolved this game on the top of the stack.",
+			tech : "Your disbursed network of hackers, bloggers, and the odd data analyst let you crunch the numbers in an ever-shrinking world. While this remains untapped, you may look at the top Event in the stack."
 		}
 
 		function Clan_Help() {
@@ -508,7 +572,6 @@
 			herd = getDotString(document.main.herd.value);
 			resources = getDotString(document.main.resources.value);
 			retainers = getDotString(document.main.retainers.value);
-			influences = getDotString(document.main.influences.value);
 
 			//Disciplines
 			animalism = getDotString(document.main.animalism.value);
@@ -533,6 +596,8 @@
 			setClan();
 			setPath();
 			setAge();
+			setInfluences();
+			
 			character_name = document.getElementById('charname_id').value;
 
 			displaywin = open('', 'Language', display_feature);
@@ -547,7 +612,8 @@
 			displaywin.document.writeln('			<td>Clan:</td>');
 			displaywin.document.writeln('			<td>' + clan_name + '</td>');
 			displaywin.document.writeln('			<td>Path:</td>');
-			displaywin.document.writeln('			<td>' + path_name + '<P><b>Conflict:</b>' + conflict + '</P></td>');
+			displaywin.document.writeln('			<td>' + path_name
+					+ '<P><b>Conflict:</b>' + conflict + '</P></td>');
 			displaywin.document.writeln('		</tr>');
 			displaywin.document.writeln('		<tr>');
 			displaywin.document
@@ -573,10 +639,10 @@
 						+ retainers);
 			}
 			displaywin.document.writeln('				<P>');
-			if (influences != "X") {
-				displaywin.document.writeln('					<b>Influences:</b>'
-						+ influences);
-			}
+
+			displaywin.document.writeln('					<b>Influences: </b>'
+					+ influencesList);
+
 			displaywin.document.writeln('			</td>');
 			displaywin.document
 					.writeln('			<td style="vertical-align: top;">Disciplines:</td>');
@@ -657,39 +723,6 @@
 
 		}
 	</SCRIPT>
-	<style type="text/css">
-.tg {
-	border-collapse: collapse;
-	border-spacing: 0;
-	border-color: #999;
-}
-
-.tg td {
-	font-family: Arial, sans-serif;
-	font-size: 14px;
-	padding: 10px 5px;
-	border-style: solid;
-	border-width: 1px;
-	overflow: hidden;
-	word-break: normal;
-	border-color: #999;
-	color: #444;
-	background-color: #F7FDFA;
-}
-
-.tg .tg-e3zv {
-	font-weight: bold
-}
-
-.tg .tg-yw4l {
-	vertical-align: top
-}
-
-#container {
-	height: 100%;
-	width: 100%;
-}
-</style>
 	<form name="main">
 		<table class="tg" id="container">
 			<tr>
@@ -761,11 +794,33 @@
 							onclick=assignRetainers(3) type=radio value=3 name=retainers>
 					<P>
 					<P>
-						<B>Influences:</B> <INPUT onclick=assignInfluences(1) type=radio
-							value=1 name=influences><INPUT
-							onclick=assignInfluences(2) type=radio value=2 name=influences><INPUT
-							onclick=assignInfluences(3) type=radio value=3 name=influences>
-					<P></td>
+						<B>Influences:</B><br>
+					<div class="container">
+						<div style="width: 12em; float: left;">
+							<input type="checkbox" class="influences" value="Bureaucratic" />
+							Bureaucratic<br> <input type="checkbox" class="influences"
+								value="Financial" /> Financial <br> <input type="checkbox"
+								class="influences" value="Society" /> Society <br> <input
+								type="checkbox" class="influences" value="Church" /> Church <br>
+							<input type="checkbox" class="influences" value="Media" /> Media
+							<br>
+						</div>
+
+						<div style="width: 12em; float: left;">
+							<input type="checkbox" class="influences" value="Medical" />
+							Medical <br> <input type="checkbox" class="influences"
+								value="Street" /> Street <br> <input type="checkbox"
+								class="influences" value="Police" /> Police <br> <input
+								type="checkbox" class="influences" value="Underworld">
+							Underworld <br> <input type="checkbox" class="influences"
+								value="Tech">Tech <br>
+						</div>
+					</div>
+					<div>
+						<br> <br> <br> <br> <br> <br> <input
+							type=button name="player_clan_help"
+							value="Influences details (TODO)" onClick="Influences_Help()">
+					</div></td>
 				<td class="tg-9hbo"><b>Disciplines:</b>
 					<P>
 						<B>Animalism:</B> <INPUT onclick=assignAnimalism(1) type=radio
@@ -829,8 +884,10 @@
 					<P></td>
 			</tr>
 			<tr>
-				<td class="tg-yw4l"><input type=button name=display_character
-					value="Display Character" onClick="displayCharacter()"></td>
+				<td class="tg-yw4l"><div id="charDisplayButton">
+						<input type=button name=display_character
+							value="Display Character" onClick="displayCharacter()">
+					</div></td>
 				<td class="tg-yw4l"><input type=button name=clear_values
 					value="Clear Dots" onClick="resetForm()"></td>
 			</tr>
