@@ -374,6 +374,99 @@
 			tech : "Your disbursed network of hackers, bloggers, and the odd data analyst let you crunch the numbers in an ever-shrinking world. While this remains untapped, you may look at the top Event in the stack."
 		}
 
+		function Influences_Help() {
+			newwin = open('', 'Help', min_feature);
+
+			newwin.document.writeln('			<style type="text/css">');
+			newwin.document.writeln('	table.table1 {');
+			newwin.document
+					.writeln('		font-family: verdana, arial, sans-serif;');
+			newwin.document.writeln('		font-size: 11px;');
+			newwin.document.writeln('		color: #333333;');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		border-color: #3A3A3A;');
+			newwin.document.writeln('		border-collapse: collapse;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 th {');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		padding: 8px;');
+			newwin.document.writeln('		border-style: solid;');
+			newwin.document.writeln('		border-color: #517994;');
+			newwin.document.writeln('		background-color: #B2CFD8;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 tr:hover td {');
+			newwin.document.writeln('		background-color: #DFEBF1;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln(' ');
+			newwin.document.writeln('	table.table1 td {');
+			newwin.document.writeln('		border-width: 1px;');
+			newwin.document.writeln('		padding: 8px;');
+			newwin.document.writeln('		border-style: solid;');
+			newwin.document.writeln('		border-color: #517994;');
+			newwin.document.writeln('		background-color: #ffffff;');
+			newwin.document.writeln('	}');
+			newwin.document.writeln('</style>');
+
+			newwin.document.writeln('<center>');
+			newwin.document.writeln('<table class="table1">');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <th>Influence</th>');
+			newwin.document.writeln('    <th>Details</th>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Bureaucratic</td>');
+			newwin.document.writeln('    <td>' + influencesText["bureaucratic"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Financial</td>');
+			newwin.document.writeln('    <td>' + influencesText["financial"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Society</td>');
+			newwin.document.writeln('    <td>' + influencesText["society"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Church</td>');
+			newwin.document.writeln('    <td>' + influencesText["church"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Media</td>');
+			newwin.document.writeln('    <td>' + influencesText["media"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Medical</td>');
+			newwin.document.writeln('    <td>' + influencesText["medical"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Street</td>');
+			newwin.document.writeln('    <td>' + influencesText["street"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Police</td>');
+			newwin.document.writeln('    <td>' + influencesText["police"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Underworld</td>');
+			newwin.document.writeln('    <td>' + influencesText["underworld"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+			newwin.document.writeln('  <tr>');
+			newwin.document.writeln('    <td>Tech</td>');
+			newwin.document.writeln('    <td>' + influencesText["tech"]
+					+ '</td>');
+			newwin.document.writeln('  </tr>');
+		}
+
 		function Clan_Help() {
 			newwin = open('', 'Help', min_feature);
 			newwin.document.writeln('			<style type="text/css">');
@@ -597,7 +690,7 @@
 			setPath();
 			setAge();
 			setInfluences();
-			
+
 			character_name = document.getElementById('charname_id').value;
 
 			displaywin = open('', 'Language', display_feature);
@@ -818,8 +911,8 @@
 					</div>
 					<div>
 						<br> <br> <br> <br> <br> <br> <input
-							type=button name="player_clan_help"
-							value="Influences details (TODO)" onClick="Influences_Help()">
+							type=button name="player_influences_help"
+							value="Influences details" onClick="Influences_Help()">
 					</div></td>
 				<td class="tg-9hbo"><b>Disciplines:</b>
 					<P>
