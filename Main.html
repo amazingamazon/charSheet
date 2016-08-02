@@ -44,17 +44,34 @@
 
 		// PATH DETAILS
 		//var flavorText; exists, no current use
+		var pathNames = [ "NONE", "Path of Humanity", "Path of Equity",
+				"Path of Fraternity", "Path of Horror", "Path of Indulgence",
+				"Path of Mercy", "Path of Mysteries", "Path of Nobility",
+				"Path of Survival", "Path of War", "Path of Corruption" ];
+		var pathAbbreviations = [ "NONE", "humanity", "equity", "fraternity",
+				"horror", "indulgence", "mercy", "mysteries", "nobility",
+				"survival", "war", "corruption" ];
 		var conflict;
 		var skillZero;
 		var skillOne;
 		var skillThree;
 		var skillSix;
 		var skillOverflow;
-		var skillAncillae;
+		var skillAncilla;
 		var skillElder;
-		
-		function assignPathDetails(path_number) {
-		
+
+		function setPathDetails(path_number) {
+			path_name = pathNames[path_number];
+			var pathAbbreviation = pathAbbreviations[path_number];
+
+			conflict = pathConflict[pathAbbreviation];
+			skillZero = pathAbilitiesZero[pathAbbreviation];
+			skillOne = pathAbilitiesOne[pathAbbreviation];
+			skillThree = pathAbilitiesThree[pathAbbreviation];
+			skillSix = pathAbilitiesSix[pathAbbreviation];
+			skillOverflow = pathOverflow[pathAbbreviation];
+			skillAncilla = pathUnlockAncilla[pathAbbreviation];
+			skillElder = pathUnlockElder[pathAbbreviation];
 		}
 
 		var clanDescriptions = {
@@ -174,12 +191,12 @@
 			fraternity : "Vulnerable.",
 			horror : "Vulnerable.",
 			indulgence : "Vulnerable.",
-			mercy : "Hurting others is wrong.",
-			mysteries : "You can find the Truth.",
-			nobility : "Someone must rule.",
-			survival : "Survive. No matter what.",
-			war : "You don't have to start a fight to end one. Except when you do.",
-			corruption : "Nothing to see here..."
+			mercy : "Vulnerable.",
+			mysteries : "Vulnerable.",
+			nobility : "Vulnerable.",
+			survival : "Vulnerable.",
+			war : "Vulnerable.",
+			corruption : "Vulnerable."
 		}
 
 		// Path ability at 1 prestige
@@ -204,7 +221,7 @@
 			fraternity : "<i>Sister’s Whispers:</i> Whether it’s from rumors you actively trade with one another or secrets you’ve pieced together from what you’ve overheard, your Contacts Rating increases by one (max four) for every other member of your Clan at game tonight. If there are none here, they’re all busy elsewhere in the city. You may then spend a Prestige during Resolution to immediately Resolve a Drama Card in your hand, with off-camera help from your kin.",
 			horror : "<i>Lurk in Shadows:</i> When you start combat and your target attempts a “Saw it Coming” test, you win ties (This cancels, and is cancelled by Basic Auspex).",
 			indulgence : "Barbed Tongue: By making cruel jokes or other critiques of another player, you may spend a Prestige to remove one of hers.",
-			mercy : "Mercy’s Aegis: Every two Wounds another Kindred inflicts on you depletes her Prestige by one (round up). You also cannot Frenzy. Any effect that would make you Hungry fails.<br>•	(Ghouls have the following, instead) <i>Ahimsa:</i> While you have at least Three Prestige, no sentient being will kill you. She might beat you, drain you, and leave you for dead, but she can’t bring herself to deliver that last blow. You’ll (miraculously) stabilize, and live to see another day. There’s one catch, though: You can’t fight back. You can (and should) Dodge, but any Strike intended to inflict a Wound on another character breaks this effect for the combat, and leaves you (very) vulnerable.",
+			mercy : "Mercy’s Aegis: Every two Wounds another Kindred inflicts on you depletes her Prestige by one (round up). You also cannot Frenzy. Any effect that would make you Hungry fails.<br>(Ghouls have the following, instead) <i>Ahimsa:</i> While you have at least Three Prestige, no sentient being will kill you. She might beat you, drain you, and leave you for dead, but she can’t bring herself to deliver that last blow. You’ll (miraculously) stabilize, and live to see another day. There’s one catch, though: You can’t fight back. You can (and should) Dodge, but any Strike intended to inflict a Wound on another character breaks this effect for the combat, and leaves you (very) vulnerable.",
 			mysteries : "Observant: It’s pretty hard to sneak up on you. You win ties on your own Saw it Coming tests. You can also cancel Path Abilities played toward you by spending a Prestige. Effects like Sharp Teeth and Trained Combatant just cost one Prestige to cancel for the rest of the fight.",
 			nobility : "Regal Countenance: All Path abilities others seek to use on you without your permission cost an additional Prestige. Effects like Sharp Teeth and Trained Combatant just cost one Prestige to use for the rest of the fight.",
 			survival : "I’m Not Prey: In a combat in which you were attacked, or you’re Hungry, you chose to either land a Strike or Grab your foe on a Ties for your Strikes, which also inflict an extra Wound on a natural Win (this stacks with Frenzy).",
@@ -443,11 +460,12 @@
 			clan_name = e.options[e.selectedIndex].value;
 		}
 
-		// Get the path from the select box and
+		// Get the path from the numer box and
 		// set the path_name varible.
 		function setPath() {
 			var e = document.getElementById("path_id");
-			path_name = e.options[e.selectedIndex].value;
+			var num = e.options[e.selectedIndex].value;
+			setPathDetails(parseInt(e.options[e.selectedIndex].value)); //TODO: Sending a number is issue
 		}
 
 		// Get the age from the select box and
@@ -483,7 +501,7 @@
 
 		// Gets values of all radio buttons, converts values for
 		// different traits into corresponding dot strings.
-		function assignDotTraits() {
+		function setDotTraits() {
 
 			//Assets
 			contacts = getDotString(document.main.contacts.value);
@@ -511,7 +529,7 @@
 		// may enter data later.
 		function Display_Empty_Sheet() {
 
-			assignDotTraits();
+			setDotTraits();
 			setClan();
 			setPath();
 			setAge();
@@ -529,7 +547,7 @@
 			displaywin.document.writeln('			<td>Clan:</td>');
 			displaywin.document.writeln('			<td>' + clan_name + '</td>');
 			displaywin.document.writeln('			<td>Path:</td>');
-			displaywin.document.writeln('			<td>' + path_name + '</td>');
+			displaywin.document.writeln('			<td>' + path_name + '<P><b>Conflict:</b>' + conflict + '</P></td>');
 			displaywin.document.writeln('		</tr>');
 			displaywin.document.writeln('		<tr>');
 			displaywin.document
@@ -609,8 +627,18 @@
 			}
 			displaywin.document.writeln('		</tr>');
 			displaywin.document.writeln('		<tr>');
-			displaywin.document.writeln('			<td colspan="2">' + path_name
-					+ ' Skills:</td>');
+			displaywin.document.writeln('			<td colspan="2" align="center">'
+					+ path_name + ' Skills:</td>');
+			displaywin.document.writeln('			<td>' + character_name + '</td>');
+			displaywin.document.writeln('			<td>Age:</td>');
+			displaywin.document.writeln('		</tr>');
+			displaywin.document.writeln('		<tr>');
+			displaywin.document.writeln('			<td colspan="2"><b>0</b> - '
+					+ skillZero + '<br><b>1</b> - ' + skillOne
+					+ '<br><b>3</b> - ' + skillThree + '<br><b>6</b> - '
+					+ skillSix + '<br><b>Overflow</b> - ' + skillOverflow
+					+ '<br><b>Unlocks at Ancilla</b> - ' + skillAncilla
+					+ '<br><b>Unlocks at Elder</b> - ' + skillElder + '</td>');
 			displaywin.document.writeln('			<td>' + character_name + '</td>');
 			displaywin.document.writeln('			<td>Age:</td>');
 			displaywin.document.writeln('		</tr>');
@@ -671,7 +699,7 @@
 						onChange='setAge()'>
 							<OPTION value="NONE">-----</OPTION>
 							<OPTION value="Neonate">Neonate</OPTION>
-							<OPTION value="Ancillae">Ancillae</OPTION>
+							<OPTION value="Ancilla">Ancilla</OPTION>
 							<OPTION value="Elder">Elder</OPTION>
 							<OPTION value="Ghoul Servant">Ghoul Servant</OPTION>
 					</SELECT>
@@ -688,23 +716,23 @@
 						<OPTION value="Ventrue">Ventrue</OPTION>
 						<OPTION value="Caitiff">Caitiff</OPTION>
 						<OPTION value="Malkavian">Malkavian</OPTION>
-						<OPTION value="Gangrel">GangreL</OPTION>
+						<OPTION value="Gangrel">Gangrel</OPTION>
 				</SELECT> <br> <input type=button name="player_clan_help"
 					value="Clan details" onClick="Clan_Help()"></td>
 				<td class="tg-9hbo"><b>Path: </b><SELECT id='path_id' name=path
 					onChange="setPath()">
-						<OPTION value="NONE">-----</OPTION>
-						<OPTION value="Path of Humanity">Path of Humanity</OPTION>
-						<OPTION value="Path of Equity">Path of Equity</OPTION>
-						<OPTION value="Path of Fraternity">Path of Fraternity</OPTION>
-						<OPTION value="Path of Horror">Path of Horror</OPTION>
-						<OPTION value="Path of Indulgence">Path of Indulgence</OPTION>
-						<OPTION value="Path of Mercy">Path of Mercy</OPTION>
-						<OPTION value="Path of Mysteries">Path of Mysteries</OPTION>
-						<OPTION value="Path of Nobility">Path of Nobility</OPTION>
-						<OPTION value="Path of Survival">Path of Survival</OPTION>
-						<OPTION value="Path of War">Path of War</OPTION>
-						<OPTION value="Path of Judgment">Path of Corruption</OPTION>
+						<OPTION value="0">-----</OPTION>
+						<OPTION value="1">Path of Humanity</OPTION>
+						<OPTION value="2">Path of Equity</OPTION>
+						<OPTION value="3">Path of Fraternity</OPTION>
+						<OPTION value="4">Path of Horror</OPTION>
+						<OPTION value="5">Path of Indulgence</OPTION>
+						<OPTION value="6">Path of Mercy</OPTION>
+						<OPTION value="7">Path of Mysteries</OPTION>
+						<OPTION value="8">Path of Nobility</OPTION>
+						<OPTION value="9">Path of Survival</OPTION>
+						<OPTION value="10">Path of War</OPTION>
+						<OPTION value="11">Path of Corruption</OPTION>
 				</SELECT></td>
 			</tr>
 			<tr>
