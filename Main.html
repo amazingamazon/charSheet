@@ -17,7 +17,7 @@
 		var display_feature = "scrollbars=yes, menubar=yes, status=no, toolbar=no, resizable=yes";
 
 		// BASICS
-		var character_name = "No Name";
+		var character_name = "";
 		var clan_name = "";
 		var newInTown = false; // 1-3 stage, 1 if needs New In Town Card, 2 if needs follow up card, 3 if not new in town
 		var age = "";
@@ -41,6 +41,21 @@
 		var resources = 0;
 		var retainers = 0;
 		var influences = 0;
+
+		// PATH DETAILS
+		//var flavorText; exists, no current use
+		var conflict;
+		var skillZero;
+		var skillOne;
+		var skillThree;
+		var skillSix;
+		var skillOverflow;
+		var skillAncillae;
+		var skillElder;
+		
+		function assignPathDetails(path_number) {
+		
+		}
 
 		var clanDescriptions = {
 			Ventrue : "Business creeps",
@@ -91,6 +106,191 @@
 			caitiff : "????",
 			malkavian : "The Malkavians often end up with Influence, Contacts and Herd, but some whisper the breadth of their ties even put the Ventruone to shame. When pressed on this, the Malkavians just snicker.",
 			gangrel : ": The Gangrel trust people at arm’s length, or right where they can see them. That translates into Contacts and Retainers, respectively."
+		}
+
+		var pathBasicText = {
+			humanity : "Try to see yourself in human terms, and the Living as real people.",
+			equity : "Everyone's out to get ahead",
+			fraternity : "Family is what matters.",
+			horror : "Being a monster is fun.",
+			indulgence : "Death is one big party.",
+			mercy : "Hurting others is wrong.",
+			mysteries : "You can find the Truth.",
+			nobility : "Someone must rule.",
+			survival : "Survive. No matter what.",
+			war : "You don't have to start a fight to end one. Except when you do.",
+			corruption : "Nothing to see here..."
+		}
+
+		// Flavor text for paths
+		var pathFlavor = {
+			humanity : "Just because the rules have changed doesn’t mean I have. I’m a person, dammit, and you can’t take that away from me!",
+			equity : "Better to be a cat in a barn full of mice than king of an empty field.",
+			fraternity : "Your mistake, bub, was hurting my little sister. You mess with one of us, you mess with us all.",
+			horror : "You can feel it, the hunger, the rage. I’ve made peace with the monster inside me. If tonight had played out differently, maybe you would have, too. Too bad.",
+			indulgence : "If I have to live forever, I want to wake up each night, looking forward to the experiences it has to offer. If I die tomorrow, it’ll be with a smile on my lips as they crumble to ashes.",
+			mercy : "Every night, we’re each given a choice: will we inflict the pain we feel back on the world, or will we make it a little brighter, even if the light burns us to do it? You always have that choice.",
+			mysteries : "Eternal life, and endless mysteries to unfold. Your survival depends on knowing what’s coming. Would you like to see what I’ve seen coming for you?",
+			nobility : "Please, there’s no need to kneel. Have a seat, and tell me what I can do for you.",
+			survival : "Sorry, what were you talking about? For a second there, I almost forgot we’re supernatural predators, competing for blood and territory. Key word there being ‘almost.’",
+			war : "I didn’t choose to take up the sword, but I chose not to put it down. There’re causes worth fighting for, and people who need to put it on the line, night after night. Now get behind me and keep low.",
+			corruption : "Every night, you scramble about, chasing after ephemeral things like meaning, and the regard of your peers. Come, tell me how well that’s actually working for you. And please do be honest."
+		}
+
+		// Path conflicts
+		var pathConflict = {
+			humanity : "Blending in takes a lot of work, particularly as the years wear on. Neonates on this path start each session two Vitae lower than they would otherwise. Older Kindred add an extra Unresolved Drama card to their hand at the start of each session to figure their starting Vitae. Causing a sentient being’s death, intentionally or otherwise, immediately removes a Prestige.",
+			equity : "Charity nearly doomed the Salubri in the Dark Ages. You’re not going to let that happen to you. Any time you perform or accept a service from another Kindred without receiving or granting a favor, you lose a Prestige. That’s not to say you can’t request small favors to disproportionately help out close Allies (or offer them when helped, in turn), but if a favor doesn’t trade hands or get called-in, it will cost you Prestige.",
+			fraternity : "Your family comes first, whoever they are, and whatever they’re up-to. Once per night per character, you lose a Prestige for refusing to aid a member of your Clan, regardless of the terms presented.",
+			horror : "You’re clearly a monster, and people don’t like monsters. You can never increase your Herd above one. You also become Hungry at five Vitae and must wear a costume, makeup or, at least a button indicating to other players that your character looks clearly monstrous. If you later move to this Path during play, if you have more than a dot in Herd, you lose it when changing to this Path, but start next game with full Vitae (nomnomnomnomnom). Finally, anyone helping your character build her Herd, who is not on a First-Tier Path, herself, loses all her Prestige, because of how you… maintain people.",
+			indulgence : "You have a lot to lose, and losing it all isn’t your idea of a good time. Every time you’re involved in combat, willingly or otherwise, lose one Prestige.",
+			mercy : "You lose a Prestige Counter whenever you inflict a Wound on another character. Feeding from willing Vessels doesn’t count, but self-defense does. Causing a sentient being’s death, intentionally or otherwise, immediately removes all of your Prestige.",
+			mysteries : "You have a very difficult time turning down a puzzle. Draw an extra Drama Card at the start of each session. If you don’t resolve it, burn one Prestige and discard it.",
+			nobility : "You lose a Prestige Counter the second time in a night another character refuses your directions, and for each time thereafter. It could be declining a final offer of negotiation, refusing to follow an order, or simply refusing to leave you alone when you’re busy.",
+			survival : "Stay fed, lick. Spending or losing Vitae while Hungry costs you one Prestige, each, unless it’s to heal Wounds.",
+			war : "You were made for the battlefield, not the parlor. Whenever you lose Prestige due to another Kindred's Path Skills or violating Elysium, you lose an extra. This doesn't apply to supernatural abilities, just social maneuvering.",
+			corruption : "Very little matters to you, least of all the hollow words of regard from others on their Paths. All Path Skills that would otherwise grant you Prestige give you one fewer. You can still gain Prestige through Blood Bonds and Disciplines, and lose Prestige from Skills, without impediment. Second, building an Asset to three dots completely defeats the purposes of this Path, so you’re capped at two. (Influences are more about relationships and favors owed. You can develop all of those you like.) And as a First-Tier Path, this rides close enough to the Beast that you become Hungry at five Vitae, instead of four."
+		}
+
+		// Ghoul conflict for path
+		var pathGhoulConflict = {
+			humanity : "You’re definitely a tiny fish, swimming with sharks. You start every session down one Prestige. Causing a sentient being’s death, intentionally or otherwise, immediately removes a Prestige as well.",
+			equity : "N/A",
+			fraternity : pathConflict["fraternity"],
+			horror : "While you don’t have a Beast to per out through unloving eyes, you’re clearly  a psychopath, and not the charming Hannibal Lector/American Psycho type (kindly play that up, if you please). You have no access to the Herd Asset, and can never, so long as you follow this Path.",
+			indulgence : "N/A",
+			mercy : "N/A",
+			mysteries : "N/A",
+			nobility : "N/A",
+			survival : "N/A",
+			war : "N/A",
+			corruption : "N/A"
+		}
+
+		// Path ability at 0 prestige
+		var pathAbilitiesZero = {
+			humanity : "Vulnerable.",
+			equity : "Vulnerable.",
+			fraternity : "Vulnerable.",
+			horror : "Vulnerable.",
+			indulgence : "Vulnerable.",
+			mercy : "Hurting others is wrong.",
+			mysteries : "You can find the Truth.",
+			nobility : "Someone must rule.",
+			survival : "Survive. No matter what.",
+			war : "You don't have to start a fight to end one. Except when you do.",
+			corruption : "Nothing to see here..."
+		}
+
+		// Path ability at 1 prestige
+		var pathAbilitiesOne = {
+			humanity : "<i>Restraint:</i> Your sense of self holds the Beast at bay. Your Prestige adds to your effective Vitae to determine whether you’re Hungry. So, if you have two Vitae and three Prestige, you wouldn’t be Hungry, but if you spent or lost one of either you would be.",
+			equity : "<i>Token of Appreciation:</i> When another character performs a favor for you, you may offer her up to three of your Prestige Tokens.",
+			fraternity : "<i>Shared Ancestry: </i>All Kindred share the Blood, making them all your kin. In conversation, you may emphasize this, handing another Kindred one of your own Prestige Tokens. The first time you do so for a member of your Clan, regain a Prestige. You may only ever give a Player one Prestige per night with this Skill.<br> (Ghouls have the following, instead) <i>Masters’ Due:</i> When you willingly feed your own Vitae to a member of your Clan, she regains a Prestige (once/night/Kindred).",
+			horror : "<i>Sharp Teeth:</i> When you attempt a Strike, and Tie on the test, you win, rather than miss. Every time you inflict a Wound or forcibly drink Vitae from a player character, regain a Prestige. <br>(Ghouls have the following, instead) <i>Sufficiently Sharp Teeth:</i> With a Grab, you may Bite and steal Vitae as though you were a vampire. Each Vitae stolen as such costs you a Prestige. Every time you inflict a Wound or forcibly drink Vitae from a player character, regain a Prestige.",
+			indulgence : "Life of the Party: You always know where the best nightlife is. When off-camera, you may exchange Prestige for Vitae, one-for-one, as you weasel your way onto guest lists and into the right back rooms, while still making it back to the gathering to get your work done. <br> •	(Ghouls have the following, instead) <i>Wing-Ghoul: </i>Your character is the kind of person most vampires would kill to have along when hunting. You know all the best hunting spots, are on good terms with all the bouncers, and, at the end of the night, are completely past any kind of judgment for anything you see Kindred do with their food. Mechanically, you can join a Kindred when she hunts, and spend a Prestige to add your total to hers when determining how much Vitae she gets. Plus, you can take the Drama card instead of her, as your character offers to tidy up afterwards.",
+			mercy : "Martyr’s Vow: You may offer another Kindred all of your Prestige Counters (leaving you Vulnerable) to fulfill a task on your behalf. This becomes a new Drama Card in her hand. If it remains unresolved at the end of play, she loses one Prestige for each you spent to enact the Vow. While she has it, any Prestige Counters that would normally move from her to you are lost, instead.",
+			mysteries : "Insight: People are just books that pretend they can’t be read. Spend a Prestige to ask another player something about her character sheet. What you learn reflects subtle tells in the character’s behavior.",
+			nobility : "The Lord’s Favor: When issuing commands, negotiating deals, or rallying your allies, you may offer another Kindred Prestige Tokens directly, presumably to further encourage them to follow your lead. If they accept, you must discard an additional Prestige Token.",
+			survival : "Never Say Die: Blood is all you really need. You can regain one Prestige by throwing a table with Vitae-fueled might, making a threatening display of supernatural prowess, or just unflinchingly pushing a knife through your hand and healing it after. Whatever the case, spend on Vitae for a purely cinematic display and regain a Prestige.<br> (Ghouls have the following, instead) <i>Rule #1:</i> You’re not stupid. You’re in a room full of vampires, and want to make it out alive. So long as you have any Prestige, when in Combat with a vampire, you can, as a Strike, break off something wooden (which just happens to be in arm’s length) into a Stake, which now serves as equipment. This costs you a Prestige. When you do so, the vampire must either spend a Prestige or end Combat.",
+			war : "Trained Combatant: When you attempt a Strike and Tie on the test, you win, rather than miss. If, instead, you miss, you may spend a Prestige to retest (once per Strike).",
+			corruption : "Prey on the Weak: Feeding Vitae to a Vulnerable Kindred grants her two Prestige. You may spend a Prestige to remove all Prestige from any Kindred you’ve so fed this evening, chastising her in public.<br>(Ghouls have the following, instead) <i>Succulence:</i> Your blood tastes like your Master’s, or, at least, it’s close enough. When you willingly feed it to Kindred, they hand you a Prestige, as a Blood Bond. If they take your blood by force, though, you’re on your own."
+		}
+
+		// Path ability at 3 prestige
+		var pathAbilitiesThree = {
+			humanity : "<i>Friends of Friends:</i> A lot of Kindred see their Assets as static tools, rather that living people, who, for instance, happen to know other people. You can spend a Prestige to turn one of your unused Contacts, Herd or Influence Assets into another one for the night. Make up a story about how you “know a guy who knows a guy.” If unused by the end of the night, this Asset reverts back to its original form.",
+			equity : "<i>Debt of Gratitude:</i> While negotiating to render aid to another character, you may hold out up to three of your own Prestige tokens, as an invitation. If the other character places the same number in your hand, and you agree to offer the assistance requested, place all of these Tokens in a separate pocket. If you successfully complete the favor asked of you, all of said Tokens become yours. If you fail or later renege on the favor, discard them all. Until either happens, you can make no use of these Tokens, though the number you initially anted counts against your cap of six Prestige.",
+			fraternity : "<i>Sister’s Whispers:</i> Whether it’s from rumors you actively trade with one another or secrets you’ve pieced together from what you’ve overheard, your Contacts Rating increases by one (max four) for every other member of your Clan at game tonight. If there are none here, they’re all busy elsewhere in the city. You may then spend a Prestige during Resolution to immediately Resolve a Drama Card in your hand, with off-camera help from your kin.",
+			horror : "<i>Lurk in Shadows:</i> When you start combat and your target attempts a “Saw it Coming” test, you win ties (This cancels, and is cancelled by Basic Auspex).",
+			indulgence : "Barbed Tongue: By making cruel jokes or other critiques of another player, you may spend a Prestige to remove one of hers.",
+			mercy : "Mercy’s Aegis: Every two Wounds another Kindred inflicts on you depletes her Prestige by one (round up). You also cannot Frenzy. Any effect that would make you Hungry fails.<br>•	(Ghouls have the following, instead) <i>Ahimsa:</i> While you have at least Three Prestige, no sentient being will kill you. She might beat you, drain you, and leave you for dead, but she can’t bring herself to deliver that last blow. You’ll (miraculously) stabilize, and live to see another day. There’s one catch, though: You can’t fight back. You can (and should) Dodge, but any Strike intended to inflict a Wound on another character breaks this effect for the combat, and leaves you (very) vulnerable.",
+			mysteries : "Observant: It’s pretty hard to sneak up on you. You win ties on your own Saw it Coming tests. You can also cancel Path Abilities played toward you by spending a Prestige. Effects like Sharp Teeth and Trained Combatant just cost one Prestige to cancel for the rest of the fight.",
+			nobility : "Regal Countenance: All Path abilities others seek to use on you without your permission cost an additional Prestige. Effects like Sharp Teeth and Trained Combatant just cost one Prestige to use for the rest of the fight.",
+			survival : "I’m Not Prey: In a combat in which you were attacked, or you’re Hungry, you chose to either land a Strike or Grab your foe on a Ties for your Strikes, which also inflict an extra Wound on a natural Win (this stacks with Frenzy).",
+			war : "Flinch: When an opponent’s attack would hit you, you may spend a Prestige to force her to retest (once).3 – Flinch: When an opponent’s attack would hit you, you may spend a Prestige to force her to retest (once).",
+			corruption : "Degeneracy: By saying or doing things that demonstrate the meaninglessness of all things, you may spend Prestige to remove Prestige from others (one-for-one)."
+		}
+
+		// Path ability at 6 prestige
+		var pathAbilitiesSix = {
+			humanity : "<i>Like a Million Bucks:</i> While they’re within a few feet of you, and in your good graces, other Kindred treat their Prestige as one higher, as long as they have at least one. A given character can only benefit from one Kindred’s application of this feature at a given time, and it doesn’t apply to a character who’s already using it. (eg two Kindred with this ability active couldn’t simply hang around one another, buffing one another up to ludicrous levels of Prestige).",
+			equity : "<i>Helping Hand:</i> Your character doesn’t just sit idle between Gatherings. With six Prestige, you “remember” helping out another Kindred character here tonight while off-camera. It could be since the last Elysium, or a hundred years ago. Either way, a small debt came up, that you may call in. Approach another player and “remind” her of what you did for her, and ask for something in return. If she refuses or fails to fulfill it by the end of the evening, she loses a Prestige. You may only use this on one character per night.",
+			fraternity : "<i>We are Legion:</i> “There’re more of us here than you think.” While you have six Prestige, you gain the use of a one-dot Kindred Retainer of your Clan (see below).",
+			horror : "<i>The Monster in the Room:</i> Your presence is sufficiently terrifying that even the laws of Elysium don’t apply to you any longer. That horror follows you is a given, and forcing you to leave is too unsettling. However, the protections of Elysium do not apply to you, either. This Skill applies at the beginning of Combat. Should your Prestige fall before it’s resolved, this Skill stays in effect.",
+			indulgence : "From Dusk ‘til Dawn: You follow the party, wherever it takes you. Sometimes, you make friends along the way. When you select this Path, choose one of the following Influences (Media, Society, Underworld) which you don’t have as an Asset, and paste its mechanics on your sheet (below). While you have six Prestige, you gain access to this additional Asset. If you later gain this Influence, select another from the remaining two. If you gain all three as permanent Influences, replace with the following: If you have six Prestige during Resolution, an extra of these Influences triggers during Downtime, as though Active.",
+			mercy : "Eyes of Judgment: Anyone who can see you loses Prestige for inflicting Wounds, as though she were a follower of this Path. You may also feed other Kindred your Vitae without the usual Blood Bond effect (costs them nothing, and doesn’t grant you Prestige).",
+			mysteries : "Prophecy: You know enough to tell when something serious is coming. If you choose to, draw an Event, as though you were a Primogen in Council. Talk about it as something that’s going to happen, for which the Kindred can prepare, to at least two Kindred of Clans different from yours. You may determine which Clan “is destined” to overcome this challenge (or bear its burden), triggering the Event for them. You must select the Clan of a character to whom you’ve revealed your prophecy. <i>If you lose Prestige, and fall below six before you’ve completed your prophecy, discard it.</i> You can only ever bestow one Prophecy per game session, regardless of the number of times you hit six Prestige.",
+			nobility : "Vast Empire: From the halls of power to the lowest peasants, all pay you your due. When you select this Path, choose one of the following Influences (Bureaucracy , Financial, or Street) which you don’t have as an Asset, and paste its mechanics on your sheet (below). While you have six Prestige, you gain access to this additional Asset. If you later gain this Influence, select another from the remaining two. If you gain all three as permanent Influences, replace with the following: If you have six Prestige during Resolution, an extra of these Influences triggers during Downtime, as though Active.",
+			survival : "Can’t Be Hurt: You’ve learned how to take a hit, taking the sting out of the worst injuries. Before applying Fortitude or other effects to reduce Wounds, any injury you suffer for more than one Wound is decreased by one. Note that this ability alone can’t reduce Wounds taken to zero, but, coupled with Fortitude, makes your character very, very hard to hurt.",
+			war : "You don't have to start a fight to end one. Except when you do.",
+			corruption : "The Hollow Truth: While you have six Prestige, you may offer to show Vulnerable Kindred the comfort of emptiness. If they accept, and while they are near you and in your good graces, the Prestige System ceases to affect them. This ends if this Kindred leaves your presence, she suffers your rebuke, or you fall below six Prestige."
+		}
+
+		// Path overflow ability
+		var pathOverflow = {
+			humanity : "Each time you would gain an additional Prestige after six, you get a Prestige Token that can be gifted to other characters, as you wish. If you lose Prestige, and no longer have six, you still have the extra to offer others.",
+			equity : "Each time you would gain an additional Prestige after six, the next application of Helping Hand increases the Prestige the target risks losing by one. If you’ve already tasked someone with Helping Hand, you may target another character with a similar favor, using the total Overflow you’ve got (resets every time this is used).",
+			fraternity : "Each time you would gain an additional Prestige after six, you acquire use of an additional one-dot Kindred Retainer of your Clan.",
+			horror : "Each time you would gain an additional Prestige after six, every additional token you earn piles up in a separate reserve. When you next make a successful attack, all of said reserve tokens get traded in, each one increasing the Wounds done by the attack by one. On a miss, you lose half of your overflow Tokens, rounded up.",
+			indulgence : "For each extra Prestige you have by Resolution, you may allocate an extra Vitae between yourself and other, willing Kindred, reflecting extra food gathered at underground parties and the like.",
+			mercy : "Additional Prestige tokens you would receive above six become Vitae in your body instead. It’s unknown where this blood comes from, but it’s free of any strings, so enjoy. This can increase your total Vitae past the maximum for your Age.",
+			mysteries : "Each time you would gain an additional Prestige after six, draw an extra Event. You can still only bestow one Prophecy per game night, but the portents you see can go either way (your choice). If you lose Prestige and fall below six, you may still use this Event as a Prophecy, above, but must discard one Event you’re holding, cutting down your options.",
+			nobility : "For each Extra Prestige, you may Leverage one of your Influences without leaving it tapped.",
+			survival : "Your Overflow Prestige becomes a separate pool of damage to be prevented, each one preventing a Wound or a Vitae’s worth of resisted Feeding before being discarded. Technically, this isn’t a supernatural effect, just a combination of wits and luck.",
+			war : "Each time you would gain an additional Prestige after six, keep the Tokens in their own pool. Anyone who wants to confront you (socially or physically) against your will must burn those off by spending her own Prestige, one-for-one before doing so. You can use these Overflow Prestige to attempt to overcome this effect from another Kindred.",
+			corruption : "Every time you’d gain Prestige after six, you may offer to instill the Hollow Truth more soundly in someone, lasting the rest of the night, regardless of her proximity to you, or your continued approval."
+		}
+
+		// Ability unlocked as Ancilla
+		var pathUnlockAncilla = {
+			humanity : "<i>Helping Hand:</i> For all their talk of being masters of politics, most vampires forget how important it is to help one another, even when it doesn’t clearly assist one’s own agenda. “People help people,” and you’ve made this a core of your psyche. Regain one Prestige whenever you help another character fulfill a Drama Card.",
+			equity : "<i>Favors to be named later:</i> During Downtime, you may spend a Prestige, and place as many remaining tokens as you like in “reserve” for future games. Keep track of this number. These Tokens may be retrieved during future Downtimes to add to the Prestige you’ll have for the following game session.",
+			fraternity : "<i>My Brother and I against You:</i> You’ve spent enough time fighting alongside kinsmen that you can play off their tactics, even when the chips are down. While you’re on the same side of a combat as another member of your Clan, you win on Ties to Strike opponents, and may continue fighting with no Prestige. This effect ends if your Clanmate leaves the fight, changes sides, or enters Torpor.",
+			horror : "Subtle Threats: Most Kindred would offer you a small gesture of deference just to get you to go away. You may ask any given player for a Prestige Token, once per night, reflecting subtle threats you’ve made toward them. If they pay up, until the end of the night, or until they aggress (attack or use aggressive Disciplines) upon you, you cannot aggress upon them.",
+			indulgence : "Air of Elation: Your fabulousness simply cannot be contained. Start each play session with an extra Prestige to hand out to another player, as you like.",
+			mercy : "Heart’s Confession: Should another Kindred lose Prestige for violating her Path, and talk with you about it, you may counsel her, letting her regain one Prestige. If she acts in some way to atone, you may give her one of your Prestige Tokens.",
+			mysteries : "Digging Deeper: Sometimes when you look hard enough at a puzzle, you find another one, peeking out from its center. During character check-in, you may spend a pre-game Prestige point to discard and redraw a Drama Card. Repeat as you like.",
+			nobility : "For each Extra Prestige, you may Leverage one of your Influences without leaving it tapped.",
+			survival : "Hard to Kill: Following any combat in which you received Wounds and remained Active (not in Torpor), recover one Vitae for every two Prestige you have at the end of the fight (rounded down), up to the number you lost to injury. This reflects damage that perhaps wasn’t quite as bad as it might have seemed. This applies only to Vitae lost to Wounds, not what was used to fuel Disciplines or taken directly by other Kindred’s feeding.",
+			war : "Combat Specialization: Choose either unarmed combat or a class of weapons. Your years of practice allow you to inflict an extra Wound with a Win to Strike with your preferred attack.",
+			corruption : "Barbed Favor: For every point you’ve given someone for being an Elder or Ancilla, you may spend a Prestige to strip two Prestige from them."
+		}
+
+		// Ability unlocked as Elder
+		var pathUnlockElder = {
+			humanity : "<i>Door Number Three:</i> You really don’t think like other Elders, which sometimes keeps you out of their games. During play, you can trade three Prestige for not drawing a Jyhad Card next game session. You still draw the usual number of Drama Cards, just not a Jyhad card. Afterwards, you can spend two Prestige to draw one fewer Drama Card the next game, until you start with none. Any cards you have that you can’t discard remain, but at least you don’t have new troubles following you.",
+			equity : "<i>Debts of the Ages:</i> You’ve been playing this game for centuries now, and have a veritable vault of favors owed to you. Once per night, you may approach another Elder, and call in a favor she or one of her people owes you. Approach her, “reminding” her of that favor, and hold out as many of your Prestige tokens as you like. Describe what you’d like her to do for you. If she agrees and accomplishes the task, she gains one of those Prestige Tokens. If she refuses or fails, she loses that number of Prestige Tokens, and you lose half (rounded up). If you become Vulnerable at any point during the night, this effect ends.",
+			fraternity : "<i>Broodmother: </i> Over the centuries, you’ve been granted the right to Embrace. You have two free one-dot Kindred Retainers of your Clan. These function as a separate pool of Retainers, from the Asset, if you have that, too. Lost Retainers are regained in the same way (see below), as you “connect with another of my Progeny from another city.”",
+			horror : "Nadir of Despair: Your every word and gesture carries a threat of unspeakable atrocity. When interacting with other characters, you may spend Vitae to lower their Prestige on a two-for-one basis, as you creep and loom about them.",
+			indulgence : "Salon of Decadence: You’ve been debauching yourself for long enough, you can pretty much pull together a feast on a whim. To do so, invite at least two other Kindred (story-wise, your character could host fewer, but where’s the fun in that?) Select a defined space at the Gathering, narrate the festivities and spend as many Prestige as you like. Each token spent allows your invited guests to regain one Vitae, each. For every dozen participants (rounded down), an extra Prestige must be spent.",
+			mercy : "Beacon of Hope: Through words of encouragement, you can shore up others’ resolve and confidence. You may spend Vitae to give others Prestige, at a one-for-one basis, or at a one-for-two if you know at least Basic Presence (since it already does this).",
+			mysteries : "Hidden Pathways: You haven’t just been playing the Elders’ game all these centuries; you’ve been studying it. As a result, you only need to Resolve two Drama Cards and your Jyhad Card to Advance it.",
+			nobility : "Largesse: You begin play with two Prestige in reserve to offer younger Kindred, as you like. In-game, this reflects your support of them, and a reward for their continued loyalty.",
+			survival : "Cliffhanger: You’ve survived scrapes that should have killed you, and will survive more, yet. Should your character meet her end, mechanically, with at least three Prestige remaining, go find the Storyteller. If you can describe a freak circumstance that would allow your character to survive, and the ST approves it, spend those three Prestige and take an extra Drama Card to remain alive. You’d have a pretty hard time explaining how you survived being publicly beheaded, or privately diablerized, so at least half of this ability comes from making it a point not to let yourself end up in places from which you couldn’t possibly escape.",
+			war : "Rally: You may spend an extra Prestige to apply Trained Combatant or Flinch to an ally, reflexively, as long as you have enough tokens to use them, yourself. To prevent any Ally’s Frenzy or loss of Prestige with Iron Resolve, you need six tokens, yourself, and must then spend two of them to bolster her composure (this can come from your overflow tokens). If your ally is younger than you, you may spend reserve Prestige tokens you’d normally hand out for being an Elder to activate these effects. Note: If you’ve changed Paths and no longer follow the Path of War, you can still grant these benefits to those under your command. You’re just beyond getting your hands dirty in such a manner yourself.",
+			corruption : "Transcending Meaning: At any point during play, when talking with someone about one of your Drama Cards, or theirs, explain how unimportant it is, spending a point of Prestige. If she agrees with you, she may spend a Prestige to immediately Resolve the card. This counts as Resolving Drama Cards toward the three you need to Advance your Jyhad Card."
+		}
+
+		var disciplinesBasicText = {
+			animalism : "Control animals and instincts.",
+			auspex : "Heightened awareness.",
+			celerity : "Unnatural speed and grace.",
+			dominate : "Controlling others' minds.",
+			fortitude : "Resilience of body and mind.",
+			obfuscate : "Hiding in plain sight.",
+			potence : "Terrifying strength.",
+			presence : "Preternatural allure and glamor.",
+			protean : "Shapeshifting to survive and adapt.",
+			valeran : "Controlling bodies to heal or harm."
+		}
+
+		var aspectsBasicText = {
+			contacts : "Informs you of others' plans.",
+			herd : "A steady supply of blood.",
+			resources : "Money solves problems.",
+			retainers : "Specific people you control.",
+			influences : "Groups over whom you hold sway."
 		}
 
 		function Clan_Help() {
@@ -318,7 +518,7 @@
 			character_name = document.getElementById('charname_id').value;
 
 			displaywin = open('', 'Language', display_feature);
-			displaywin.document.writeln('<table cellpadding="2">');
+			displaywin.document.writeln('<table cellpadding="2" border="1">');
 			displaywin.document.writeln('		<tr>');
 			displaywin.document.writeln('			<td>Name:</td>');
 			displaywin.document.writeln('			<td>' + character_name + '</td>');
@@ -408,9 +608,14 @@
 						+ '</td>');
 			}
 			displaywin.document.writeln('		</tr>');
+			displaywin.document.writeln('		<tr>');
+			displaywin.document.writeln('			<td colspan="2">' + path_name
+					+ ' Skills:</td>');
+			displaywin.document.writeln('			<td>' + character_name + '</td>');
+			displaywin.document.writeln('			<td>Age:</td>');
+			displaywin.document.writeln('		</tr>');
 			displaywin.document.writeln('	</table>');
 
-			// you're cut off
 			// displaywin.document.close();
 			displaywin.focus();
 		} // end of Display_Empty_Sheet()
@@ -468,6 +673,7 @@
 							<OPTION value="Neonate">Neonate</OPTION>
 							<OPTION value="Ancillae">Ancillae</OPTION>
 							<OPTION value="Elder">Elder</OPTION>
+							<OPTION value="Ghoul Servant">Ghoul Servant</OPTION>
 					</SELECT>
 				</b></td>
 			</tr>
@@ -498,12 +704,7 @@
 						<OPTION value="Path of Nobility">Path of Nobility</OPTION>
 						<OPTION value="Path of Survival">Path of Survival</OPTION>
 						<OPTION value="Path of War">Path of War</OPTION>
-						<OPTION value="Path of Death">Path of Death</OPTION>
-						<OPTION value="Path of Judgment">Path of Judgment</OPTION>
-						<OPTION value="Path of Paradox">Path of Paradox</OPTION>
-						<OPTION value="Path of Typhon/Corruption">Path of
-							Typhon/Corruption</OPTION>
-						<OPTION value="Path of Judgment">Path of Judgment</OPTION>
+						<OPTION value="Path of Judgment">Path of Corruption</OPTION>
 				</SELECT></td>
 			</tr>
 			<tr>
